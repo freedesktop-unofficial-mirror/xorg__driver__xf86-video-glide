@@ -45,7 +45,7 @@
    * Support static loading.  
 */
 
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/glide/glide_driver.c,v 1.27 2001/08/07 07:04:46 keithp Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/glide/glide_driver.c,v 1.28 2002/01/04 21:22:30 tsi Exp $ */
 
 #include "xaa.h"
 #include "xf86Cursor.h"
