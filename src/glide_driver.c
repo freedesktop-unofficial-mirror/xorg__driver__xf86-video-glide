@@ -174,7 +174,7 @@ static int LoadGlide(void);
  * this DriverRec be an upper-case version of the driver name.
  */
 
-DriverRec GLIDE = {
+_X_EXPORT DriverRec GLIDE = {
   VERSION,
   GLIDE_DRIVER_NAME,
   GLIDEIdentify,
@@ -240,7 +240,7 @@ static XF86ModuleVersionInfo glideVersRec =
   {0,0,0,0}
 };
 
-XF86ModuleData glideModuleData = { &glideVersRec, glideSetup, NULL };
+_X_EXPORT XF86ModuleData glideModuleData = { &glideVersRec, glideSetup, NULL };
 
 static pointer
 glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
