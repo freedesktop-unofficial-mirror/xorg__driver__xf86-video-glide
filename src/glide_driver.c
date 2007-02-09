@@ -163,7 +163,7 @@ static void	GLIDEDisplayPowerManagementSet(ScrnInfoPtr pScrn,
 
 static int LoadGlide(void);
 
-#define VERSION 4000
+#define GLIDE_VERSION 4000
 #define GLIDE_NAME "GLIDE"
 #define GLIDE_DRIVER_NAME "glide"
 #define GLIDE_MAJOR_VERSION 1
@@ -179,7 +179,7 @@ static int LoadGlide(void);
  */
 
 _X_EXPORT DriverRec GLIDE = {
-  VERSION,
+  GLIDE_VERSION,
   GLIDE_DRIVER_NAME,
   GLIDEIdentify,
   GLIDEProbe,
@@ -268,13 +268,13 @@ glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 "\n"
 "Could not load the shared library file for Glide: \"libglide2x.so\"! \n"
 "\n"
-"You need to have Glide installed to run the glide driver for XFree86.\n"
-"Also, you need to tell XFree86 where the libglide2x.so file is placed\n"
-"by making a soft link in the /usr/X11R6/lib/modules directory that points\n"
+"You need to have Glide installed to run the glide driver for X.Org.\n"
+"Also, you need to tell X.Org where the libglide2x.so file is placed\n"
+"by making a soft link in the " MODULEDIR " directory that points\n"
 "to the libglide2x.so file. For example (if your libglide2x.so file is in\n"
 "/usr/lib):\n"
 "\n"
-"  # ln -s /usr/lib/libglide2x.so /usr/X11R6/lib/modules\n"
+"  # ln -s /usr/lib/libglide2x.so " MODULEDIR "\n"
 "\n"
 "\n");
       if (errmaj)
@@ -412,7 +412,7 @@ GLIDEProbe(DriverPtr drv, int flags)
 	    /* XXX Need to see how this fits in with the new RAC */
 	    
 	    /* Fill in what we can of the ScrnInfoRec */
-	    pScrn->driverVersion = VERSION;
+	    pScrn->driverVersion = GLIDE_VERSION;
 	    pScrn->driverName    = GLIDE_DRIVER_NAME;
 	    pScrn->name          = GLIDE_NAME;
 	    pScrn->Probe	 = GLIDEProbe;
