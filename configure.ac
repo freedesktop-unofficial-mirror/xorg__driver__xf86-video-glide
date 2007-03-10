@@ -50,9 +50,9 @@ AC_ARG_WITH(xorg-module-dir,
 
 AC_ARG_WITH(glide-include-dir,
             AC_HELP_STRING([--with-glide-include-dir=DIR],
-                           [Default Glide include directory [[default=$includedir/glide]]]),
+                           [Default Glide include directory [[default=/usr/include/glide]]]),
             [glideincludedir="$withval"],
-            [glideincludedir="$includedir/glide"])
+            [glideincludedir="/usr/include/glide"])
 
 # Checks for extensions
 XORG_DRIVER_CHECK_EXT(RANDR, randrproto)
