@@ -166,9 +166,9 @@ static int LoadGlide(void);
 #define GLIDE_VERSION 4000
 #define GLIDE_NAME "GLIDE"
 #define GLIDE_DRIVER_NAME "glide"
-#define GLIDE_MAJOR_VERSION 1
-#define GLIDE_MINOR_VERSION 0
-#define GLIDE_PATCHLEVEL 0
+#define GLIDE_MAJOR_VERSION PACKAGE_VERSION_MAJOR
+#define GLIDE_MINOR_VERSION PACKAGE_VERSION_MINOR
+#define GLIDE_PATCHLEVEL PACKAGE_VERSION_PATCHLEVEL
 
 /* 
  * This contains the functions needed by the server after loading the
