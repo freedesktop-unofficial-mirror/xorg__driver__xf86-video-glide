@@ -66,7 +66,10 @@ sdkdir=$(pkg-config --variable=sdkdir xorg-server)
 # Checks for libraries.
 
 # Checks for header files.
+CPPFLAGS="$CPPFLAGS -I$glideincludedir"
 AC_HEADER_STDC
+AC_HEADER_CHECK([glide.h], [],
+                [AC_MSG_ERROR([<glide.h> is required])])
 
 GLIDE_CFLAGS="-I$glideincludedir"
 AC_SUBST([GLIDE_CFLAGS])
