@@ -70,10 +70,6 @@
 
 #define TRUE 1
 #define FALSE 0
-#ifdef NULL
-#undef NULL
-#endif
-#define NULL 0
 
 typedef signed char        s8;
 typedef unsigned char      u8;
