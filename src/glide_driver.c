@@ -392,12 +392,12 @@ GLIDEProbe(DriverPtr drv, int flags)
       {
         int entity;
         /* Match */
-        entity = xf86ClaimIsaSlot(drv, 0, dev, TRUE);
+        entity = xf86ClaimNoSlot(drv, 0, dev, TRUE);
         pScrn = NULL;
 
         /* Allocate a ScrnInfoRec and claim the slot */
-        if ((pScrn = xf86ConfigIsaEntity(pScrn, 0, entity, NULL, NULL,
-					       NULL, NULL, NULL, NULL))) {
+        if ((pScrn = xf86AllocateScreen(drv, 0))) {
+	    xf86AddEntityToScreen(pScrn, entityIndex);
 	    
 	    /* I'm not going to "claim" the glide device since no other driver than this can drive it */
 	    /* (A glide device is not a PCI device) */
