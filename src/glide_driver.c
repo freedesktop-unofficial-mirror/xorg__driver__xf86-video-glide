@@ -390,9 +390,9 @@ GLIDEProbe(DriverPtr drv, int flags)
       GlideDevice = xf86SetIntOption(dev->options, "GlideDevice", 0);
       if (GlideDevice == sst)
       {
-        int entity;
+        int entityIndex;
         /* Match */
-        entity = xf86ClaimNoSlot(drv, 0, dev, TRUE);
+        entityIndex = xf86ClaimNoSlot(drv, 0, dev, TRUE);
         pScrn = NULL;
 
         /* Allocate a ScrnInfoRec and claim the slot */
