@@ -23,6 +23,8 @@ SUBDIRS = src man
 EXTRA_DIST = README ChangeLog
 MAINTAINERCLEANFILES = ChangeLog
 
+.PHONY: ChangeLog
+
 ChangeLog:
 	( GIT_DIR=$(top_srcdir)/.git git-log > .changelog.tmp && \
 	  mv .changelog.tmp ChangeLog; \
