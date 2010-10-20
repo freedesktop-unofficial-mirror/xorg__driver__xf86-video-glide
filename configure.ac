@@ -23,9 +23,9 @@
 
 AC_PREREQ(2.57)
 AC_INIT([xf86-video-glide],
-        1.0.3,
+        [1.0.3],
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
-        xf86-video-glide)
+        [xf86-video-glide])
 
 AC_CONFIG_SRCDIR([Makefile.am])
 AM_CONFIG_HEADER([config.h])
