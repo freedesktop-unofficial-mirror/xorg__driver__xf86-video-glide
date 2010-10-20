@@ -52,4 +52,4 @@ MAN_SUBSTS = \
 SUFFIXES = .$(DRIVER_MAN_SUFFIX) .man
 
 .man.$(DRIVER_MAN_SUFFIX):
-	sed $(MAN_SUBSTS) < $< > $@
+	$(SED) $(MAN_SUBSTS) < $< > $@
