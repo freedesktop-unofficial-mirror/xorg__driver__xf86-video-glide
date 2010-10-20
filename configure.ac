@@ -60,8 +60,6 @@ AC_ARG_WITH(glide-include-dir,
             [glideincludedir="/usr/include/glide"])
 
 # Checks for extensions
-XORG_DRIVER_CHECK_EXT(RANDR, randrproto)
-XORG_DRIVER_CHECK_EXT(RENDER, renderproto)
 XORG_DRIVER_CHECK_EXT(DPMSExtension, xextproto)
 
 # Checks for pkg-config packages
