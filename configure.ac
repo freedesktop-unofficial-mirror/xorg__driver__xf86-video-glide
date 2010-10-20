@@ -48,13 +48,13 @@ AC_PROG_LIBTOOL
 AH_TOP([#include "xorg-server.h"])
 
 AC_ARG_WITH(xorg-module-dir,
-            AC_HELP_STRING([--with-xorg-module-dir=DIR],
+            AS_HELP_STRING([--with-xorg-module-dir=DIR],
                            [Default xorg module directory [[default=$libdir/xorg/modules]]]),
             [moduledir="$withval"],
             [moduledir="$libdir/xorg/modules"])
 
 AC_ARG_WITH(glide-include-dir,
-            AC_HELP_STRING([--with-glide-include-dir=DIR],
+            AS_HELP_STRING([--with-glide-include-dir=DIR],
                            [Default Glide include directory [[default=/usr/include/glide]]]),
             [glideincludedir="$withval"],
             [glideincludedir="/usr/include/glide"])
