@@ -74,7 +74,7 @@ AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 # Checks for header files.
 CPPFLAGS="$CPPFLAGS -I$glideincludedir"
 AC_HEADER_STDC
-AC_HEADER_CHECK([glide.h], [],
+AC_CHECK_HEADER([glide.h], [],
                 [AC_MSG_ERROR([<glide.h> is required])])
 
 GLIDE_CFLAGS="-I$glideincludedir"
