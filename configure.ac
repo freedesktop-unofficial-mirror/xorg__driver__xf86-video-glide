@@ -35,10 +35,10 @@ AM_INIT_AUTOMAKE([foreign dist-bzip2])
 
 AM_MAINTAINER_MODE
 
-# Require xorg-macros version 1.3.0 or newer for XORG_DEFAULT_OPTIONS
+# Require X.Org macros 1.8 or later for MAN_SUBSTS set by XORG_MANPAGE_SECTION
 m4_ifndef([XORG_MACROS_VERSION],
-          [AC_FATAL([must install xorg-macros 1.3 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.3)
+          [AC_FATAL([must install xorg-macros 1.8 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.8)
 XORG_DEFAULT_OPTIONS
 
 # Checks for programs.
