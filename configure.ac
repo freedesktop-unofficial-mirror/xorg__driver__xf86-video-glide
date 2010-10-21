@@ -1,5 +1,5 @@
 #  Copyright © 2005 Adam Jackson.
-#  Copyright © 2007 Guillem Jover.
+#  Copyright © 2007-2010 Guillem Jover.
 #
 #  Permission is hereby granted, free of charge, to any person obtaining a
 #  copy of this software and associated documentation files (the "Software"),
