@@ -162,6 +162,7 @@ static int LoadGlide(void);
 #define GLIDE_VERSION 4000
 #define GLIDE_NAME "GLIDE"
 #define GLIDE_DRIVER_NAME "glide"
+#define GLIDE_MODULE_NAME "glide2x"
 #define GLIDE_MAJOR_VERSION PACKAGE_VERSION_MAJOR
 #define GLIDE_MINOR_VERSION PACKAGE_VERSION_MINOR
 #define GLIDE_PATCHLEVEL PACKAGE_VERSION_PATCHLEVEL
@@ -225,6 +226,7 @@ _X_EXPORT XF86ModuleData glideModuleData = { &glideVersRec, glideSetup, NULL };
 static pointer
 glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 {
+  const char module_name[] = GLIDE_MODULE_NAME;
   static Bool setupDone = FALSE;
   pointer ret;
   int errmaj2 = 0, errmin2 = 0;
@@ -236,23 +238,23 @@ glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
      * by calling LoadSubModule().
      */
 
-    ret = LoadSubModule(module, "glide2x", NULL, NULL, EXTERN_MODULE, NULL,
+    ret = LoadSubModule(module, module_name, NULL, NULL, EXTERN_MODULE, NULL,
 			&errmaj2, &errmin2);
     if (!ret)
     {
       xf86Msg(X_ERROR, "Glide driver:\n"
 "\n"
-"Could not load the shared library file for Glide: \"libglide2x.so\"! \n"
+"Could not load the shared library file for Glide: \"lib%s.so\"! \n"
 "\n"
 "You need to have Glide installed to run the glide driver for X.Org.\n"
-"Also, you need to tell X.Org where the libglide2x.so file is placed\n"
+"Also, you need to tell X.Org where the lib%s.so file is placed\n"
 "by making a soft link in the " MODULEDIR " directory that points\n"
-"to the libglide2x.so file. For example (if your libglide2x.so file is in\n"
+"to the lib%s.so file. For example (if your lib%s.so file is in\n"
 "/usr/lib):\n"
 "\n"
-"  # ln -s /usr/lib/libglide2x.so " MODULEDIR "\n"
+"  # ln -s /usr/lib/lib%s.so " MODULEDIR "\n"
 "\n"
-"\n");
+"\n", module_name, module_name, module_name, module_name, module_name);
       if (errmaj)
         *errmaj = LDR_NOSUBENT;
       if (errmin)
@@ -959,7 +961,7 @@ GLIDERestore(ScrnInfoPtr pScrn, Bool Closing)
   p##x = (p##x##_t)LoaderSymbol(#x); \
   if (!p##x) \
   { \
-    xf86Msg(X_ERROR, "Could not find " #x "() in libglide2x.so.\n"); \
+    xf86Msg(X_ERROR, "Could not find " #x "() in lib%s.so.\n", GLIDE_MODULE_NAME); \
     return FALSE; \
   }
 
