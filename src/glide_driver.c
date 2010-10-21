@@ -72,6 +72,11 @@
 
 #include <glide.h>
 
+/* glide3x does not define this alias anymore, so let's do it ourselves. */
+#ifndef GR_ZDEPTHVALUE_FARTHEST
+#define GR_ZDEPTHVALUE_FARTHEST 0
+#endif
+
 #define TRUE 1
 #define FALSE 0
 
@@ -88,7 +93,11 @@ typedef u8                 bool;
 #define GLIDEPTR(p) ((GLIDEPtr)((p)->driverPrivate))
 
 
+#if defined(GLIDE3)
+typedef FxU32 (*pgrGet_t)(FxU32 pname, FxU32 plength, FxI32 *params);
+#else
 typedef FxBool (*pgrSstQueryBoards_t)(GrHwConfiguration*);
+#endif
 typedef void (*pgrGlideInit_t)(void);
 typedef void (*pgrSstSelect_t)(int which_sst);
 typedef FxBool (*pgrSstWinOpen_t)(FxU32, GrScreenResolution_t, GrScreenRefresh_t, 
@@ -125,7 +134,11 @@ typedef struct {
   OptionInfoPtr       Options;
 } GLIDERec, *GLIDEPtr;
 
+#if defined(GLIDE3)
+static pgrGet_t pgrGet;
+#else
 static pgrSstQueryBoards_t pgrSstQueryBoards;
+#endif
 static pgrGlideInit_t      pgrGlideInit;
 static pgrSstSelect_t      pgrSstSelect;
 static pgrSstWinOpen_t     pgrSstWinOpen;
@@ -162,7 +175,11 @@ static int LoadGlide(void);
 #define GLIDE_VERSION 4000
 #define GLIDE_NAME "GLIDE"
 #define GLIDE_DRIVER_NAME "glide"
+#ifdef GLIDE3
+#define GLIDE_MODULE_NAME "glide3x"
+#else
 #define GLIDE_MODULE_NAME "glide2x"
+#endif
 #define GLIDE_MAJOR_VERSION PACKAGE_VERSION_MAJOR
 #define GLIDE_MINOR_VERSION PACKAGE_VERSION_MINOR
 #define GLIDE_PATCHLEVEL PACKAGE_VERSION_PATCHLEVEL
@@ -331,13 +348,45 @@ GLIDEIdentify(int flags)
   xf86PrintChipsets(GLIDE_NAME, "driver for Glide devices (Voodoo cards)", GLIDEChipsets);
 }
 
+#if defined(GLIDE3)
+static int
+glide_get_num_boards(void)
+{
+  FxI32 num_sst;
+  int r;
+
+  r = pgrGet(GR_NUM_BOARDS, sizeof(num_sst), &num_sst);
+  if (!r)
+  {
+    xf86Msg(X_ERROR, "GLIDEProbe(): Error calling pgrGet(GR_NUM_BOARDS)!\n");
+    return -1;
+  }
+
+  return num_sst;
+}
+#else
+static int
+glide_get_num_boards(void)
+{
+  GrHwConfiguration hw;
+  int r;
+
+  r = pgrSstQueryBoards(&hw);
+  if (!r)
+  {
+    xf86Msg(X_ERROR, "GLIDEProbe(): Error calling pgrSstQueryBoards!\n");
+    return -1;
+  }
+
+  return hw.num_sst;
+}
+#endif
 
 /* Mandatory */
 static Bool
 GLIDEProbe(DriverPtr drv, int flags)
 {
-  GrHwConfiguration hw;
-  int i, sst, r;
+  int i, num_sst, sst;
   GDevPtr *devList;
   GDevPtr dev = NULL;
   int numdevList;
@@ -348,21 +397,17 @@ GLIDEProbe(DriverPtr drv, int flags)
   if ((numdevList = xf86MatchDevice(GLIDE_DRIVER_NAME, &devList)) <= 0)
     return FALSE;
 
-  r = pgrSstQueryBoards(&hw);
-  if (!r)
-  {
-    xf86Msg(X_ERROR, "GLIDEProbe(): Error calling pgrSstQueryBoards!\n");
+  num_sst = glide_get_num_boards();
+  if (num_sst < 0)
     goto cleanup;
-  }
-  
-  
-  /* hw.num_sst : number of Glide boards available */
-  if (hw.num_sst > 0 && (flags & PROBE_DETECT)) {
+
+  /* num_sst: number of Glide boards available */
+  if (num_sst > 0 && (flags & PROBE_DETECT)) {
     /* XXX Need to call xf886AddDeviceToConfigure() here */
     return TRUE;
   }
 
-  for (sst = 0; sst < hw.num_sst; sst++)
+  for (sst = 0; sst < num_sst; sst++)
   {
     for (i = 0; i < numdevList; i++)
     {
@@ -968,7 +1013,11 @@ GLIDERestore(ScrnInfoPtr pScrn, Bool Closing)
 static int
 LoadGlide(void)
 {
+#ifdef GLIDE3
+  GLIDE_FIND_FUNC(grGet);
+#else
   GLIDE_FIND_FUNC(grSstQueryBoards);
+#endif
   GLIDE_FIND_FUNC(grGlideInit);
   GLIDE_FIND_FUNC(grSstSelect);
   GLIDE_FIND_FUNC(grSstWinOpen);
