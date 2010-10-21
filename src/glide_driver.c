@@ -311,7 +311,7 @@ GLIDEFreeRec(ScrnInfoPtr pScrn)
 {
   if (pScrn->driverPrivate == NULL)
     return;
-  xfree(pScrn->driverPrivate);
+  free(pScrn->driverPrivate);
   pScrn->driverPrivate = NULL;
 }
 
@@ -404,7 +404,7 @@ GLIDEProbe(DriverPtr drv, int flags)
   }
 
  cleanup:
-  xfree(devList);
+  free(devList);
   return foundScreen;
 }
 	
@@ -505,7 +505,8 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   xf86CollectOptions(pScrn, NULL);
 
   /* Process the options */
-  if (!(pGlide->Options = xalloc(sizeof(GLIDEOptions))))
+  pGlide->Options = malloc(sizeof(GLIDEOptions));
+  if (pGlide->Options == NULL)
     return FALSE;
   memcpy(pGlide->Options, GLIDEOptions, sizeof(GLIDEOptions));
   xf86ProcessOptions(pScrn->scrnIndex, pScrn->options, pGlide->Options);
@@ -777,7 +778,7 @@ GLIDECloseScreen(int scrnIndex, ScreenPtr pScreen)
 
   if (pScrn->vtSema)
       GLIDERestore(pScrn, TRUE);
-  xfree(pGlide->ShadowPtr);
+  free(pGlide->ShadowPtr);
 
   pScrn->vtSema = FALSE;
 
@@ -799,7 +800,7 @@ GLIDEFreeScreen(int scrnIndex, int flags)
    * get called routinely at the end of a server generation.
    */
   if (pGlide && pGlide->ShadowPtr)
-    xfree(pGlide->ShadowPtr);
+    free(pGlide->ShadowPtr);
   GLIDEFreeRec(xf86Screens[scrnIndex]);
 }
 
