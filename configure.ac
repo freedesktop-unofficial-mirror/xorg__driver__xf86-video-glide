@@ -69,6 +69,11 @@ PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
 AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 
 # Checks for libraries.
+AC_CHECK_LIB([glide3x], [grGet], [GLIDE_LDFLAGS="-lglide3x"], [
+  AC_CHECK_LIB([glide2x], [grSstQueryBoards], [GLIDE_LDFLAGS="-lglide2x"], [
+    AC_MSG_ERROR([missing glide shared library])], [])], [])
+
+AC_SUBST([GLIDE_LDFLAGS])
 
 # Checks for header files.
 CPPFLAGS="$CPPFLAGS -I$glideincludedir"
