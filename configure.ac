@@ -76,7 +76,10 @@ AC_HEADER_STDC
 AC_CHECK_HEADER([glide.h], [],
                 [AC_MSG_ERROR([<glide.h> is required])])
 
-AC_CHECK_DECL([grGet], [AC_DEFINE(GLIDE3, 1, [glide3x available])], [],
+AC_CHECK_DECL([grGet],
+              [AC_DEFINE(GLIDE3, 1, [glide3x available])
+               AC_DEFINE(GLIDE3_ALPHA, 1, [glide3x alpha available])],
+              [],
               [#include <glide.h>])
 
 GLIDE_CFLAGS="-I$glideincludedir"
