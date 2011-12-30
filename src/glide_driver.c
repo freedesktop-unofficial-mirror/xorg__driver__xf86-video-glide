@@ -332,6 +332,8 @@ GLIDEProbe(DriverPtr drv, int flags)
 
         /* Allocate a ScrnInfoRec and claim the slot */
         if ((pScrn = xf86AllocateScreen(drv, 0))) {
+	    GLIDEPtr pGlide;
+
 	    xf86AddEntityToScreen(pScrn, entityIndex);
 	    
 	    /* I'm not going to "claim" the glide device since no other driver than this can drive it */
@@ -348,7 +350,14 @@ GLIDEProbe(DriverPtr drv, int flags)
 	    pScrn->EnterVT	 = GLIDEEnterVT;
 	    pScrn->LeaveVT	 = GLIDELeaveVT;
 	    pScrn->FreeScreen    = GLIDEFreeScreen;
-	    pScrn->driverPrivate = (void*)sst;
+
+	    /* Allocate the GLIDERec driverPrivate */
+	    if (!GLIDEGetRec(pScrn))
+		break;
+
+	    pGlide = GLIDEPTR(pScrn);
+	    pGlide->SST_Index = sst;
+
 	    /*
 	     * XXX This is a hack because don't have the PCI info.  Set it as
 	     * an ISA entity with no resources.
@@ -376,16 +385,12 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   MessageType from;
   int i;
   ClockRangePtr clockRanges;
-  int sst;
 
   if (flags & PROBE_DETECT) return FALSE;
 
   /* Check the number of entities, and fail if it isn't one. */
   if (pScrn->numEntities != 1)
     return FALSE;
-
-  sst = (int)(pScrn->driverPrivate);
-  pScrn->driverPrivate = NULL;
 
   /* Set pScrn->monitor */
   pScrn->monitor = pScrn->confScreen->monitor;
@@ -448,11 +453,6 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   /* We use a programmable clock */
   pScrn->progClock = TRUE;
 
-  /* Allocate the GLIDERec driverPrivate */
-  if (!GLIDEGetRec(pScrn)) {
-    return FALSE;
-  }
-
   pGlide = GLIDEPTR(pScrn);
 
   /* Get the entity */
@@ -476,8 +476,6 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   xf86DrvMsg(pScrn->scrnIndex, from, 
              "Voodoo card will be %s when exiting server.\n", 
              pGlide->OnAtExit ? "ON" : "OFF");
-
-  pGlide->SST_Index = sst;
 
   /*
    * If the user has specified the amount of memory in the XF86Config
