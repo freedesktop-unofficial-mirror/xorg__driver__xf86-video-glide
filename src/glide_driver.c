@@ -49,15 +49,12 @@
 #include "config.h"
 #endif
 
-#include "xaa.h"
-#include "xf86Cursor.h"
 #include "colormapst.h"
 #include "xf86.h"
 #include "xf86_OSproc.h"
 #include "mipointer.h"
 #include "mibstore.h"
 #include "micmap.h"
-#include "xf86DDC.h"
 #include "globals.h"
 #ifdef HAVE_XEXTPROTO_71
 #include <X11/extensions/dpmsconst.h>
