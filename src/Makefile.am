@@ -30,5 +30,6 @@ glide_drv_la_LDFLAGS = -module -avoid-version
 glide_drv_ladir = @moduledir@/drivers
 
 glide_drv_la_SOURCES = \
+         compat-api.h \
          glide_driver.c
 

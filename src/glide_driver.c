@@ -67,6 +67,8 @@
 #include "xf86cmap.h"
 #include "shadowfb.h"
 
+#include "compat-api.h"
+
 #include <glide.h>
 
 /* glide3x does not define this alias anymore, so let's do it ourselves. */
@@ -107,12 +109,12 @@ static const OptionInfoRec * GLIDEAvailableOptions(int chipid, int busid);
 static void	GLIDEIdentify(int flags);
 static Bool	GLIDEProbe(DriverPtr drv, int flags);
 static Bool	GLIDEPreInit(ScrnInfoPtr pScrn, int flags);
-static Bool	GLIDEScreenInit(int Index, ScreenPtr pScreen, int argc, char **argv);
-static Bool	GLIDEEnterVT(int scrnIndex, int flags);
-static void	GLIDELeaveVT(int scrnIndex, int flags);
-static Bool	GLIDECloseScreen(int scrnIndex, ScreenPtr pScreen);
+static Bool	GLIDEScreenInit(SCREEN_INIT_ARGS_DECL);
+static Bool	GLIDEEnterVT(VT_FUNC_ARGS_DECL);
+static void	GLIDELeaveVT(VT_FUNC_ARGS_DECL);
+static Bool	GLIDECloseScreen(CLOSE_SCREEN_ARGS_DECL);
 static Bool	GLIDESaveScreen(ScreenPtr pScreen, int mode);
-static void     GLIDEFreeScreen(int scrnIndex, int flags);
+static void     GLIDEFreeScreen(FREE_SCREEN_ARGS_DECL);
 static void     GLIDERefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox);
 static Bool     GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode);
 static void     GLIDERestore(ScrnInfoPtr pScrn, Bool Closing);
@@ -573,7 +575,7 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
 /* Mandatory */
 /* This gets called at the start of each server generation */
 static Bool
-GLIDEScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
 {
   ScrnInfoPtr pScrn;
   GLIDEPtr pGlide;
@@ -583,7 +585,7 @@ GLIDEScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
   /* 
    * First get the ScrnInfoRec
    */
-  pScrn = xf86Screens[pScreen->myNum];
+  pScrn = xf86ScreenToScrn(pScreen);
 
   pGlide = GLIDEPTR(pScrn);
 
@@ -693,9 +695,9 @@ GLIDEScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
 /* Mandatory */
 static Bool
-GLIDEEnterVT(int scrnIndex, int flags)
+GLIDEEnterVT(VT_FUNC_ARGS_DECL)
 {
-  ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+  SCRN_INFO_PTR(arg);
   return GLIDEModeInit(pScrn, pScrn->currentMode);
 }
 
@@ -708,9 +710,9 @@ GLIDEEnterVT(int scrnIndex, int flags)
 
 /* Mandatory */
 static void
-GLIDELeaveVT(int scrnIndex, int flags)
+GLIDELeaveVT(VT_FUNC_ARGS_DECL)
 {
-  ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+  SCRN_INFO_PTR(arg);
   GLIDERestore(pScrn, FALSE);
 }
 
@@ -723,9 +725,9 @@ GLIDELeaveVT(int scrnIndex, int flags)
 
 /* Mandatory */
 static Bool
-GLIDECloseScreen(int scrnIndex, ScreenPtr pScreen)
+GLIDECloseScreen(CLOSE_SCREEN_ARGS_DECL)
 {
-  ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+  ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
   GLIDEPtr pGlide = GLIDEPTR(pScrn);
 
   if (pScrn->vtSema)
@@ -735,7 +737,7 @@ GLIDECloseScreen(int scrnIndex, ScreenPtr pScreen)
   pScrn->vtSema = FALSE;
 
   pScreen->CloseScreen = pGlide->CloseScreen;
-  return (*pScreen->CloseScreen)(scrnIndex, pScreen);
+  return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
 }
 
 
@@ -743,9 +745,9 @@ GLIDECloseScreen(int scrnIndex, ScreenPtr pScreen)
 
 /* Optional */
 static void
-GLIDEFreeScreen(int scrnIndex, int flags)
+GLIDEFreeScreen(FREE_SCREEN_ARGS_DECL)
 {
-  ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+  SCRN_INFO_PTR(arg);
   GLIDEPtr pGlide = GLIDEPTR(pScrn);
   /*
    * This only gets called when a screen is being deleted.  It does not
@@ -753,7 +755,7 @@ GLIDEFreeScreen(int scrnIndex, int flags)
    */
   if (pGlide && pGlide->ShadowPtr)
     free(pGlide->ShadowPtr);
-  GLIDEFreeRec(xf86Screens[scrnIndex]);
+  GLIDEFreeRec(pScrn);
 }
 
 
@@ -767,7 +769,7 @@ GLIDESaveScreen(ScreenPtr pScreen, int mode)
   Bool unblank;
   
   unblank = xf86IsUnblank(mode);
-  pScrn = xf86Screens[pScreen->myNum];
+  pScrn = xf86ScreenToScrn(pScreen);
   pGlide = GLIDEPTR(pScrn);
   pGlide->Blanked = !unblank;
   if (unblank)
