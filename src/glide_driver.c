@@ -53,7 +53,6 @@
 #include "xf86.h"
 #include "xf86_OSproc.h"
 #include "mipointer.h"
-#include "mibstore.h"
 #include "micmap.h"
 #include "globals.h"
 #ifdef HAVE_XEXTPROTO_71
@@ -648,7 +647,6 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
   /* must be after RGB ordering fixed */
   fbPictureInit (pScreen, 0, 0);
 
-  miInitializeBackingStore(pScreen);
   xf86SetBlackWhitePixels(pScreen);
   xf86SetBackingStore(pScreen);
 
