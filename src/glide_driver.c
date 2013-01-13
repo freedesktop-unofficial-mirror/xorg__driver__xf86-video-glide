@@ -1,5 +1,4 @@
-
-/* 
+/*
    XFree86 driver for Glide(tm). (Mainly for Voodoo 1 and 2 cards)
 
    Since Voodoo 1 and Voodoo 2 cards are very, very NOT made for
@@ -12,8 +11,8 @@
    anyway. Also, we don't have any interaction with any hardware since
    Glide is the layer beneath the driver.
 
-   Author: 
-     Henrik Harmsen (hch@cd.chalmers.se or Henrik.Harmsen@erv.ericsson.se) 
+   Author:
+     Henrik Harmsen (hch@cd.chalmers.se or Henrik.Harmsen@erv.ericsson.se)
 
    HISTORY
    1999-04-05
@@ -42,7 +41,7 @@
    * Support for setting gamma individually for R,G,B when Glide 3 arrives
      for Linux.  This will allow me to get rid of that sick green tint my
      voodoo2 board produces...
-   * Support static loading.  
+   * Support static loading.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -85,7 +84,7 @@ typedef unsigned short int u16;
 typedef signed long int    s32;
 typedef unsigned long int  u32;
 typedef u8                 bool;
- 
+
 /* Card-specific driver information */
 
 #define GLIDEPTR(p) ((GLIDEPtr)((p)->driverPrivate))
@@ -131,7 +130,7 @@ static void	GLIDEDisplayPowerManagementSet(ScrnInfoPtr pScrn,
 #define GLIDE_MINOR_VERSION PACKAGE_VERSION_MINOR
 #define GLIDE_PATCHLEVEL PACKAGE_VERSION_PATCHLEVEL
 
-/* 
+/*
  * This contains the functions needed by the server after loading the
  * driver module.  It must be supplied, and gets added the driver list by
  * the Module Setup funtion in the dynamic case.  In the static case a
@@ -192,8 +191,8 @@ glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
 {
   static Bool setupDone = FALSE;
   int errmaj2 = 0, errmin2 = 0;
-    
-  if (!setupDone) 
+
+  if (!setupDone)
   {
     setupDone = TRUE;
     /* This module should be loaded only once */
@@ -205,10 +204,10 @@ glideSetup(pointer module, pointer opts, int *errmaj, int *errmin)
      * is no TearDownProc.
      */
     return (pointer)1;
-  } 
-  else 
+  }
+  else
   {
-    if (errmaj) 
+    if (errmaj)
       *errmaj = LDR_ONCEONLY;
     return NULL;
   }
@@ -241,7 +240,6 @@ GLIDEFreeRec(ScrnInfoPtr pScrn)
   free(pScrn->driverPrivate);
   pScrn->driverPrivate = NULL;
 }
-
 
 static const OptionInfoRec *
 GLIDEAvailableOptions(int chipid, int busid)
@@ -333,11 +331,11 @@ GLIDEProbe(DriverPtr drv, int flags)
 	    GLIDEPtr pGlide;
 
 	    xf86AddEntityToScreen(pScrn, entityIndex);
-	    
+
 	    /* I'm not going to "claim" the glide device since no other driver than this can drive it */
 	    /* (A glide device is not a PCI device) */
 	    /* XXX Need to see how this fits in with the new RAC */
-	    
+
 	    /* Fill in what we can of the ScrnInfoRec */
 	    pScrn->driverVersion = GLIDE_VERSION;
 	    pScrn->driverName    = GLIDE_DRIVER_NAME;
@@ -371,9 +369,6 @@ GLIDEProbe(DriverPtr drv, int flags)
   free(devList);
   return foundScreen;
 }
-	
-
-
 
 /* Mandatory */
 static Bool
@@ -471,8 +466,8 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   if (xf86GetOptValBool(pGlide->Options, OPTION_ON_AT_EXIT, &(pGlide->OnAtExit)))
     from = X_CONFIG;
 
-  xf86DrvMsg(pScrn->scrnIndex, from, 
-             "Voodoo card will be %s when exiting server.\n", 
+  xf86DrvMsg(pScrn->scrnIndex, from,
+             "Voodoo card will be %s when exiting server.\n",
              pGlide->OnAtExit ? "ON" : "OFF");
 
   /*
@@ -510,7 +505,7 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
                         pScrn->display->virtualY,
                         pScrn->videoRam * 1024,
                         LOOKUP_BEST_REFRESH);
-    
+
   if (i == -1) {
     GLIDEFreeRec(pScrn);
     return FALSE;
@@ -531,11 +526,11 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
 
   /* Do some checking, we will not support a virtual framebuffer larger than
      the visible screen. */
-  if (pScrn->currentMode->HDisplay != pScrn->virtualX || 
+  if (pScrn->currentMode->HDisplay != pScrn->virtualX ||
       pScrn->currentMode->VDisplay != pScrn->virtualY ||
       pScrn->displayWidth != pScrn->virtualX)
   {
-    xf86DrvMsg(pScrn->scrnIndex, X_WARNING, 
+    xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
                "Virtual size doesn't equal display size. Forcing virtual size to equal display size.\n");
     xf86DrvMsg(pScrn->scrnIndex, X_WARNING,
                "(Virtual size: %dx%d, Display size: %dx%d)\n", pScrn->virtualX, pScrn->virtualY,
@@ -554,7 +549,7 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
 
   /* Set display resolution */
   xf86SetDpi(pScrn, 0, 0);
-    
+
   /* Load fb */
   if (xf86LoadSubModule(pScrn, "fb") == NULL) {
     GLIDEFreeRec(pScrn);
@@ -570,7 +565,6 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
   return TRUE;
 }
 
-
 /* Mandatory */
 /* This gets called at the start of each server generation */
 static Bool
@@ -581,7 +575,7 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
   int ret;
   VisualPtr visual;
 
-  /* 
+  /*
    * First get the ScrnInfoRec
    */
   pScrn = xf86ScreenToScrn(pScreen);
@@ -617,7 +611,6 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
   pGlide->ShadowPitch = ((pScrn->virtualX * pScrn->bitsPerPixel >> 3) + 3) & ~3L;
   pGlide->ShadowPtr = xnfalloc(pGlide->ShadowPitch * pScrn->virtualY);
 
-  
   /*
    * Call the framebuffer layer's ScreenInit function, and fill in other
    * pScreen fields.
@@ -650,7 +643,7 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
   xf86SetBlackWhitePixels(pScreen);
   xf86SetBackingStore(pScreen);
 
-  /* Initialize software cursor.  
+  /* Initialize software cursor.
      Must precede creation of the default colormap */
   miDCInitialize(pScreen, xf86GetPointerScreenFuncs());
 
@@ -681,8 +674,6 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
   /* Done */
   return TRUE;
 }
-
-
 
 /*
  * This is called when VT switching back to the X server.  Its job is
@@ -738,7 +729,6 @@ GLIDECloseScreen(CLOSE_SCREEN_ARGS_DECL)
   return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
 }
 
-
 /* Free up any persistent data structures */
 
 /* Optional */
@@ -756,7 +746,6 @@ GLIDEFreeScreen(FREE_SCREEN_ARGS_DECL)
   GLIDEFreeRec(pScrn);
 }
 
-
 /* Do screen blanking */
 /* Mandatory */
 static Bool
@@ -765,7 +754,7 @@ GLIDESaveScreen(ScreenPtr pScreen, int mode)
   ScrnInfoPtr pScrn;
   GLIDEPtr pGlide;
   Bool unblank;
-  
+
   unblank = xf86IsUnblank(mode);
   pScrn = xf86ScreenToScrn(pScreen);
   pGlide = GLIDEPTR(pScrn);
@@ -800,7 +789,7 @@ GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 
 #if 0
   ErrorF("mode->HDisplay = %d, pScrn->displayWidth = %d\n", mode->HDisplay, pScrn->displayWidth);
-  ErrorF("mode->VDisplay = %d, mode->HTotal = %d, mode->VTotal = %d\n", 
+  ErrorF("mode->VDisplay = %d, mode->HTotal = %d, mode->VTotal = %d\n",
          mode->VDisplay, mode->HTotal, mode->VTotal);
   ErrorF("mode->Clock = %d\n", mode->Clock);
 #endif
@@ -835,15 +824,15 @@ GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
     match = TRUE;
     pGlide->grResolution = GR_RESOLUTION_1600x1200;
   }
-  
+
   if (!match)
   {
-    xf86DrvMsg(pScrn->scrnIndex, X_ERROR, 
+    xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
                "Selected width = %d and height = %d is not supported by glide\n", width, height);
     return FALSE;
   }
 
-  refresh = (mode->Clock * 1.0e3)/((double)(mode->HTotal) * 
+  refresh = (mode->Clock * 1.0e3)/((double)(mode->HTotal) *
                                    (double)(mode->VTotal));
 #if 0
   ErrorF("Calculated refresh rate for mode is %.2fHz\n",refresh);
@@ -890,7 +879,7 @@ GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
   return TRUE;
 }
 
-static void     
+static void
 GLIDERestore(ScrnInfoPtr pScrn, Bool Closing)
 {
   GLIDEPtr pGlide;
@@ -915,7 +904,7 @@ GLIDERefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
   s32 x1, x2;
 
   if (pGlide->Blanked) return;
-  
+
   Bpp = pScrn->bitsPerPixel >> 3;
   if (pScrn->bitsPerPixel == 16)
   {
@@ -924,7 +913,7 @@ GLIDERefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
          half-words over the PCI bus */
       x1 = (pbox->x1) & ~1;
       x2 = (pbox->x2 + 1) & ~1;
-      src = pGlide->ShadowPtr + (pbox->y1 * pGlide->ShadowPitch) + 
+      src = pGlide->ShadowPtr + (pbox->y1 * pGlide->ShadowPitch) +
             (x1 * Bpp);
 #if defined(GLIDE3) && defined(GLIDE3_ALPHA)
       grLfbWriteRegion(GR_BUFFER_FRONTBUFFER, x1, pbox->y1,
@@ -943,7 +932,7 @@ GLIDERefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
     while(num--) {
       x1 = pbox->x1;
       x2 = pbox->x2;
-      src = pGlide->ShadowPtr + (pbox->y1 * pGlide->ShadowPitch) + 
+      src = pGlide->ShadowPtr + (pbox->y1 * pGlide->ShadowPitch) +
             (pbox->x1 * Bpp);
 #if defined(GLIDE3) && defined(GLIDE3_ALPHA)
       grLfbWriteRegion(GR_BUFFER_FRONTBUFFER, x1, pbox->y1,
@@ -957,7 +946,7 @@ GLIDERefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
       pbox++;
     }
   }
-} 
+}
 
 
 /*
@@ -1000,7 +989,6 @@ GLIDEDisplayPowerManagementSet(ScrnInfoPtr pScrn, int PowerManagementMode,
   oldmode = PowerManagementMode;
 }
 
-
 static void
 GLIDERefreshAll(ScrnInfoPtr pScrn)
 {
@@ -1011,4 +999,3 @@ GLIDERefreshAll(ScrnInfoPtr pScrn)
   box.y2 = pScrn->virtualY;
   GLIDERefreshArea(pScrn, 1, &box);
 }
-
