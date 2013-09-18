@@ -606,9 +606,10 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
     miClearVisualTypes();
 
     /* Setup the visuals we support. Only TrueColor. */
-    if (!miSetVisualTypes(pScrn->depth,
-                          miGetDefaultVisualMask(pScrn->depth),
-                          pScrn->rgbBits, pScrn->defaultVisual))
+    ret = miSetVisualTypes(pScrn->depth,
+                           miGetDefaultVisualMask(pScrn->depth),
+                           pScrn->rgbBits, pScrn->defaultVisual);
+    if (!ret)
         return FALSE;
 
     miSetPixmapDepths();
