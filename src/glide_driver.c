@@ -671,11 +671,6 @@ GLIDEScreenInit(SCREEN_INIT_ARGS_DECL)
     if (serverGeneration == 1)
         xf86ShowUnusedOptions(pScrn->scrnIndex, pScrn->options);
 
-#if 0
-    LoaderCheckUnresolved(LD_RESOLV_NOW);
-    return FALSE;
-#endif
-
     /* Done */
     return TRUE;
 }
