@@ -257,10 +257,10 @@ static int
 glide_get_num_boards(void)
 {
     FxI32 num_sst;
-    int r;
+    int ret;
 
-    r = grGet(GR_NUM_BOARDS, sizeof(num_sst), &num_sst);
-    if (!r) {
+    ret = grGet(GR_NUM_BOARDS, sizeof(num_sst), &num_sst);
+    if (!ret) {
         xf86Msg(X_ERROR,
                 "GLIDEProbe(): Error calling grGet(GR_NUM_BOARDS)!\n");
         return -1;
@@ -273,10 +273,10 @@ static int
 glide_get_num_boards(void)
 {
     GrHwConfiguration hw;
-    int r;
+    int ret;
 
-    r = grSstQueryBoards(&hw);
-    if (!r) {
+    ret = grSstQueryBoards(&hw);
+    if (!ret) {
         xf86Msg(X_ERROR, "GLIDEProbe(): Error calling grSstQueryBoards!\n");
         return -1;
     }
@@ -372,7 +372,7 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
 {
     GLIDEPtr pGlide;
     MessageType from;
-    int i;
+    int ret;
     ClockRangePtr clockRanges;
 
     if (flags & PROBE_DETECT)
@@ -495,16 +495,14 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
     clockRanges->doubleScanAllowed = TRUE;
 
     /* Select valid modes from those available */
-    i = xf86ValidateModes(pScrn, pScrn->monitor->Modes,
-                          pScrn->display->modes, clockRanges,
-                          NULL, 256, 2048,
-                          pScrn->bitsPerPixel, 128, 2048,
-                          pScrn->display->virtualX,
-                          pScrn->display->virtualY,
-                          pScrn->videoRam * 1024,
-                          LOOKUP_BEST_REFRESH);
-
-    if (i == -1) {
+    ret = xf86ValidateModes(pScrn, pScrn->monitor->Modes,
+                            pScrn->display->modes, clockRanges,
+                            NULL, 256, 2048,
+                            pScrn->bitsPerPixel, 128, 2048,
+                            pScrn->display->virtualX,
+                            pScrn->display->virtualY,
+                            pScrn->videoRam * 1024, LOOKUP_BEST_REFRESH);
+    if (ret == -1) {
         GLIDEFreeRec(pScrn);
         return FALSE;
     }
@@ -513,7 +511,7 @@ GLIDEPreInit(ScrnInfoPtr pScrn, int flags)
     xf86PruneDriverModes(pScrn);
 
     /* If no valid modes, return */
-    if (i == 0 || pScrn->modes == NULL) {
+    if (ret == 0 || pScrn->modes == NULL) {
         xf86DrvMsg(pScrn->scrnIndex, X_ERROR, "No valid modes found\n");
         GLIDEFreeRec(pScrn);
         return FALSE;
@@ -774,7 +772,7 @@ static Bool
 GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 {
     GLIDEPtr pGlide;
-    int r;
+    int ret;
     int width, height;
     double refresh;
     Bool match = FALSE;
@@ -850,16 +848,12 @@ GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
     grGlideInit();
     grSstSelect(pGlide->SST_Index);
 
-    r = grSstWinOpen(0,
-                     pGlide->grResolution,
-                     pGlide->grRefreshRate,
-                     GR_COLORFORMAT_ARGB,
-                     GR_ORIGIN_UPPER_LEFT,
-                     2, 0);
-    if (!r) {
+    ret = grSstWinOpen(0, pGlide->grResolution, pGlide->grRefreshRate,
+                       GR_COLORFORMAT_ARGB, GR_ORIGIN_UPPER_LEFT, 2, 0);
+    if (!ret) {
         xf86DrvMsg(pScrn->scrnIndex, X_ERROR, "grSstWinOpen returned %d. "
                    "You are probably trying to use a resolution that is not "
-                   "supported by your hardware.", r);
+                   "supported by your hardware.", ret);
         return FALSE;
     }
 
