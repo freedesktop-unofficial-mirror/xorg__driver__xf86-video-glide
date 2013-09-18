@@ -297,7 +297,8 @@ GLIDEProbe(DriverPtr drv, int flags)
     ScrnInfoPtr pScrn;
     int GlideDevice;
 
-    if ((numdevList = xf86MatchDevice(GLIDE_DRIVER_NAME, &devList)) <= 0)
+    numdevList = xf86MatchDevice(GLIDE_DRIVER_NAME, &devList);
+    if (numdevList <= 0)
         return FALSE;
 
     num_sst = glide_get_num_boards();
@@ -322,7 +323,8 @@ GLIDEProbe(DriverPtr drv, int flags)
                 pScrn = NULL;
 
                 /* Allocate a ScrnInfoRec and claim the slot */
-                if ((pScrn = xf86AllocateScreen(drv, 0))) {
+                pScrn = xf86AllocateScreen(drv, 0);
+                if (pScrn) {
                     GLIDEPtr pGlide;
 
                     xf86AddEntityToScreen(pScrn, entityIndex);
