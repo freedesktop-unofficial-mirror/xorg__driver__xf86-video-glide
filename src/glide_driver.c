@@ -873,12 +873,6 @@ GLIDEModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
     grClipWindow(0, 0, 1024, 768);
     grBufferClear(0, 0, GR_ZDEPTHVALUE_FARTHEST);
 
-    if (!r) {
-        xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
-                   "Could not lock glide frame buffer\n");
-        return FALSE;
-    }
-
     pGlide->Blanked = FALSE;
     pGlide->GlideInitiated = TRUE;
 
